@@ -2772,6 +2772,16 @@ BOOL WINAPI DECLSPEC_HOTPATCH SetCurrentDirectoryW( LPCWSTR dir )
 {
     UNICODE_STRING dirW;
 
+    WCHAR *p = (WCHAR *)dir;
+    while (*p) p++;
+    {
+        if (*--p == '.') 
+        {
+            *p = '\0';
+            FIXME("%s . fixed\n", debugstr_w(dir));
+        }
+    }
+    
     RtlInitUnicodeString( &dirW, dir );
     return set_ntstatus( RtlSetCurrentDirectory_U( &dirW ));
 }
